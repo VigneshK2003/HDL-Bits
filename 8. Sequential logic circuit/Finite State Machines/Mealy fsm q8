@@ -1,0 +1,43 @@
+module top_module (
+    input clk,
+    input aresetn,    
+    input x,
+    output reg z
+); 
+    
+    parameter A = 2'b00, B = 2'b01, C = 2'b10; 
+    reg [1:0] state, next_state;
+    
+    always @(posedge clk or negedge aresetn) begin
+        if (!aresetn)
+            state <= A;
+        else
+            state <= next_state;
+    end  
+    
+    always @(*) begin
+        z = 1'b0;     // default output
+        
+        case (state)
+        
+            A: begin
+                next_state = x ? B : A;
+            end
+            
+            B: begin
+                next_state = x ? B : C;
+            end
+            
+            C: begin
+                if (x) begin
+                    z = 1'b1;      
+                    next_state = B; 
+                end else
+                    next_state = A;
+            end
+            
+            default: next_state = A;
+        endcase
+    end
+    
+endmodule
